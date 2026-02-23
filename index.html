@@ -105,9 +105,34 @@ h1{
   color:#1a0a14;line-height:1.1;margin-bottom:0.35rem;
 }
 h1 em{
-  color:#6e1732;font-style:normal;
+  background:linear-gradient(135deg,#c2185b,#7b1fa2);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  font-style:normal;
 }
 .header-sub{color:var(--ink-soft);font-size:0.75rem;font-weight:400;margin-top:0.3rem;opacity:0.8;}
+
+.header-inspo-top{
+  margin-top:0.6rem;
+  font-size:0.72rem;
+  color:#7d2a47;
+  font-weight:700;
+  letter-spacing:0.02em;
+}
+.page-inspo-bottom{
+  margin-top:1.8rem;
+  text-align:center;
+  padding:0.95rem 1rem;
+  border-radius:12px;
+  border:1.5px solid var(--pink-light);
+  background:linear-gradient(135deg,#fff6fa,#fff0f6);
+  color:#7d2a47;
+  font-size:0.8rem;
+  font-weight:700;
+  box-shadow:0 4px 14px var(--shadow);
+}
+
 .header-disclaimer{
   margin-top:0.65rem;
   padding:0.55rem 0.75rem;
@@ -780,6 +805,7 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
       <div class="header-tag">Irish Dance Matrix</div>
       <h1>Irish Dance <em>Matrix</em></h1>
       <div class="header-sub">A simple tool to target your Irish dancing needs and plan smart weekly sessions.</div>
+      <div class="header-inspo-top">✨ Every step you repeat today becomes confidence on stage tomorrow.</div>
       <div class="header-disclaimer"><strong>Important:</strong> This is just a planning tool, not a physio, coach, or PT. Please train mindfully, listen to your body, and always check plans with your dance teacher or coach.</div>
 
       <div class="legend">
@@ -801,72 +827,12 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
     <div class="tab" data-tab="muscles">🔬 By Muscle Group</div>
     <div class="tab" data-tab="pillars">🌟 All 7 Pillars</div>
     <div class="tab" data-tab="injuries">🩹 Injury Prevention</div>
-    <div class="tab" data-tab="guide">🌸 Beginner Guide</div>
     <div class="tab" data-tab="research">📚 Research Sources</div>
     <div class="tab" data-tab="plan">✨ Build a Session</div>
   </div>
 </nav>
 
 <main>
-
-<!-- BEGINNER GUIDE VIEW -->
-<div class="view" id="view-guide">
-  <div class="sh">New to Irish Dancing? Start Here 🌸</div>
-  <div class="ss">A plain-language guide for dancers, parents &amp; newcomers to the feis world</div>
-
-  <div class="guide-grid">
-
-    <div class="guide-card">
-      <div class="guide-icon">💃</div>
-      <div class="guide-title">What is a Feis?</div>
-      <div class="guide-body">A <strong>feis</strong> (pronounced <em>"fesh"</em>, plural: <em>feiseanna</em>) is an Irish dancing competition — usually held on weekends in community halls or hotels. Dancers compete in age groups and levels, from beginner (<strong>Primary</strong>) through to the most advanced (<strong>Prizewinner / Open Championship</strong>). Medals, trophies, and recall points are awarded. Think of it as a gymnastics meet, but for feet! 🏆</div>
-    </div>
-
-    <div class="guide-card">
-      <div class="guide-icon">🥇</div>
-      <div class="guide-title">Levels Explained</div>
-      <div class="guide-body">Dancers advance through levels by winning or placing well at feiseanna. The typical progression is: <strong>Primary → Beginner → Advanced Beginner → Novice → Prizewinner → Preliminary Champion → Open Champion</strong>. At the top sits the <strong>World Championship (An Chomhdhail)</strong> — the biggest event in Irish dance, held every year at Easter. Getting there takes years of dedication! 🌟</div>
-    </div>
-
-    <div class="guide-card">
-      <div class="guide-icon">👟</div>
-      <div class="guide-title">Soft Shoes vs Hard Shoes</div>
-      <div class="guide-body"><strong>Soft shoes</strong> (pumps / ghillies) look like ballet slippers and are worn for reels, light jigs, and slip jigs. They create graceful, flowing movement. <strong>Hard shoes</strong> (heavies / jig shoes) have a fiberglass tip and heel that make rhythmic clicking sounds — worn for hornpipes, treble jigs, and set dances. Many dancers train both styles from the start. 👠</div>
-    </div>
-
-    <div class="guide-card">
-      <div class="guide-icon">🎗️</div>
-      <div class="guide-title">Dress & Appearance</div>
-      <div class="guide-body">Competition dresses are elaborate, embroidered, and often custom-made. Colours and emblem designs are unique to each dance school (<strong>feachool</strong>). Hair is worn in curls — either a wig or natural curls in a bun. At lower levels, simpler dresses are fine, but as dancers advance, competition-specific dresses become more important. Solo dresses can cost anywhere from €200 to €2,000+. 💎</div>
-    </div>
-
-    <div class="guide-card">
-      <div class="guide-icon">📅</div>
-      <div class="guide-title">What is the Oireachtas?</div>
-      <div class="guide-body">The <strong>Oireachtas</strong> (pronounced <em>"oh-RECK-tus"</em>) is a major regional championship — one step below the World Championships. Qualifying at the Oireachtas earns a dancer the right to compete at Worlds. In Ireland, the All-Ireland Oireachtas is held in November. It is hugely prestigious — getting on stage there is a huge achievement for any dancer. 🌍</div>
-    </div>
-
-    <div class="guide-card">
-      <div class="guide-icon">💪</div>
-      <div class="guide-title">Why Train Off-Stage?</div>
-      <div class="guide-body">Irish dancing is incredibly physically demanding — it requires explosive power, balance, core stability, hip mobility, and cardiovascular endurance. Most injuries happen because certain muscles are over-trained while others are neglected. This app helps dancers and parents build a <strong>balanced training plan</strong> that supports class work and reduces injury risk — especially important as competitions get more intense. 🧠</div>
-    </div>
-
-    <div class="guide-card">
-      <div class="guide-icon">🔵</div>
-      <div class="guide-title">Understanding the Colour Dots</div>
-      <div class="guide-body">Throughout this app, exercises are labelled with a small coloured dot. A <strong>gold dot</strong> means <em>Compound</em> — the exercise trains 4 or more muscle groups at once and gives you the most return per minute of training. A <strong>pink dot</strong> means <em>Focused</em> — it targets one or two specific muscles and is best used when you know you have a particular weak spot. Beginners: start with compound exercises! ✨</div>
-    </div>
-
-    <div class="guide-card">
-      <div class="guide-icon">🧘</div>
-      <div class="guide-title">How to Use This App</div>
-      <div class="guide-body">Start with <strong>Feis Goals</strong> — pick the movement quality you most want to improve (e.g. "higher kicks" or "better turnout"). The app shows you exactly which muscles are involved, which exercises target them, and the science behind it. Then visit <strong>Build a Session</strong> to tick exercises and create a printable training plan. Not sure where to start? Talk to your dance teacher about what the judge feedback says! 💬</div>
-    </div>
-
-  </div>
-</div>
-
 
 <!-- GOALS VIEW -->
 <div class="view active" id="view-goals">
@@ -985,6 +951,7 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
   </div>
 </div>
 
+  <div class="page-inspo-bottom">🌟 Keep showing up — your strength, style, and sparkle are built one brave session at a time.</div>
 </main>
 
 
