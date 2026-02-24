@@ -68,7 +68,7 @@ window.addEventListener('appinstalled', () => {
   --border-dark: #ddb8c5;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Nunito',sans-serif;background:#f9eef3;color:#1a0a14;min-height:100vh;font-size:15px;line-height:1.7;}
+body{font-family:'Nunito',sans-serif;background:#f9eef3;color:#1a0a14;min-height:100vh;font-size:16px;line-height:1.75;}
 
 /* ── HERO / INTRO ── */
 header{
@@ -85,7 +85,7 @@ header::before{
 .header-inner{
   position:relative;max-width:1150px;margin:0 auto;
   display:grid;grid-template-columns:1fr auto;align-items:end;
-  padding:4.8rem 2rem 2.8rem;gap:2.5rem;
+  padding:2.9rem 2rem 1.6rem;gap:1.8rem;
 }
 h1{
   font-family:'Nunito',sans-serif;
@@ -94,17 +94,15 @@ h1{
   color:#1f1120;line-height:1.08;margin-bottom:0.6rem;
 }
 .header-sub{color:#3f2432;font-size:1.35rem;font-weight:600;line-height:1.45;max-width:700px;}
-.header-tagline{margin-top:1.1rem;font-size:1.02rem;color:#4b2638;max-width:700px;font-weight:700;}
-.header-copy{margin-top:1.1rem;font-size:0.98rem;color:#5d3750;max-width:680px;line-height:1.8;}
-.header-note{margin-top:0.85rem;font-size:0.8rem;color:#7a5970;max-width:680px;}
+.header-copy{margin-top:0.9rem;font-size:1.02rem;color:#5d3750;max-width:680px;line-height:1.8;}
 .header-dancer-wrap{display:flex;align-items:flex-end;justify-content:center;}
 .header-dancer-img{
-  width:145px;
+  width:120px;
   filter:drop-shadow(0 8px 18px rgba(212,106,151,0.28));
   display:block;
 }
-.hero-sections{position:relative;max-width:1150px;margin:0 auto;padding:0 2rem 4.4rem;}
-.hero-disclaimer{font-size:0.82rem;color:#7a5970;}
+.hero-sections{position:relative;max-width:1150px;margin:0 auto;padding:0 2rem 1.4rem;}
+.hero-disclaimer{font-size:0.9rem;color:#7a5970;}
 
 /* ── NAV ── */
 .nav{
@@ -124,14 +122,24 @@ h1{
 .tab:hover{color:var(--rose);background:var(--pink-soft);}
 .tab.active{color:var(--rose);border-bottom-color:var(--rose);background:var(--pink-soft);}
 
-main{max-width:1150px;margin:0 auto;padding:2.5rem 2rem 3.5rem;background:transparent;}
+main{max-width:1150px;margin:0 auto;padding:1.7rem 2rem 3.8rem;background:transparent;}
 .view{display:none;}
 .view.active{display:block;}
 .sh{
-  font-family:'Cormorant Garamond',serif;font-size:1.7rem;
+  font-family:'Cormorant Garamond',serif;font-size:2.1rem;
   color:#7f1f4b;margin-bottom:0.45rem;
 }
-.ss{font-size:0.95rem;color:#6a4f60;margin-bottom:1.6rem;font-weight:400;opacity:1;}
+.ss{font-size:1.06rem;color:#6a4f60;margin-bottom:1.8rem;font-weight:500;opacity:1;}
+
+.quick-actions{margin-bottom:2.7rem;}
+.quick-actions-title{font-family:'Cormorant Garamond',serif;font-size:2rem;color:#7f1f4b;margin-bottom:0.25rem;}
+.quick-actions-sub{font-size:1rem;color:#6a4f60;margin-bottom:1.1rem;}
+.quick-actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0.8rem;}
+.qa-card{background:#fff;border:1.5px solid #f2d3e2;border-radius:14px;padding:0.95rem;box-shadow:0 4px 16px rgba(232,84,122,0.06);}
+.qa-title{font-size:1.03rem;font-weight:700;color:#721a48;margin-bottom:0.2rem;}
+.qa-desc{font-size:0.9rem;color:#835a6e;line-height:1.5;margin-bottom:0.7rem;}
+.qa-btn{border:1px solid #e7a7c2;background:#fff3f8;color:#8f2a59;font-weight:700;font-family:inherit;padding:0.38rem 0.7rem;border-radius:999px;cursor:pointer;transition:all 0.18s;}
+.qa-btn:hover{background:#fce4ee;border-color:#de88ae;}
 
 /* ── BADGES ── */
 .cbadge{
@@ -469,7 +477,7 @@ main{max-width:1150px;margin:0 auto;padding:2.5rem 2rem 3.5rem;background:transp
 .weekly-reflection-label{display:block;font-size:0.62rem;font-weight:700;color:#8f3f62;margin-bottom:0.2rem;}
 .weekly-reflection-input{width:100%;min-height:72px;padding:0.6rem 0.65rem;border:1px solid #e4bccb;border-radius:10px;background:#fffafc;color:#6e1732;font-size:0.68rem;line-height:1.5;resize:vertical;font-family:inherit;}
 
-.planner-section{margin-bottom:4.25rem;}
+.planner-section{margin-bottom:4.8rem;}
 .planner-section:last-child{margin-bottom:0;}
 .planner-main{max-width:840px;}
 .plan-library-toggle{background:#f6d8e6;border:none;color:#7f1f4b;padding:0.45rem 0.9rem;border-radius:999px;font-size:0.68rem;font-weight:700;cursor:pointer;}
@@ -655,7 +663,9 @@ main{max-width:1150px;margin:0 auto;padding:2.5rem 2rem 3.5rem;background:transp
 /* Better h1 sizing on mobile */
 @media(max-width:760px){
   .header-inner{grid-template-columns:1fr;padding:2.4rem 1rem 1rem;gap:0.9rem;}
-  .hero-sections{padding:0 1rem 2.4rem;}
+  .hero-sections{padding:0 1rem 1.1rem;}
+  .quick-actions{margin-bottom:2.2rem;}
+  .quick-actions-title{font-size:1.75rem;}
   .header-dancer-wrap{justify-content:flex-start;}
   .header-sub{font-size:1.1rem;}
   main{padding:1.5rem 1rem 2.6rem;}
@@ -794,9 +804,7 @@ main{max-width:1150px;margin:0 auto;padding:2.5rem 2rem 3.5rem;background:transp
     <div class="header-text">
       <h1>Irish Dance Matrix</h1>
       <h2 class="header-sub">A smarter way to plan, track, and elevate your Irish dance training.</h2>
-      <div class="header-tagline">Train clever. Train consistently. Shine on stage.</div>
       <div class="header-copy">Plan your week with intention. Track what you actually worked on. Reflect on your progress and patterns.</div>
-      <div class="header-note">Built to support your training — not replace your coach.</div>
       <div class="header-credit">Created by <strong>Marcela</strong></div>
     </div>
     <div class="header-dancer-wrap">
@@ -804,7 +812,7 @@ main{max-width:1150px;margin:0 auto;padding:2.5rem 2rem 3.5rem;background:transp
     </div>
   </div>
   <section class="hero-sections">
-    <p class="hero-disclaimer">This tool supports planning and reflection. Your coach remains the lead authority for technique and training decisions.</p>
+    <p class="hero-disclaimer">Built to support your training rhythm and reflection — always in partnership with your coach.</p>
   </section>
 </header>
 
@@ -822,9 +830,41 @@ main{max-width:1150px;margin:0 auto;padding:2.5rem 2rem 3.5rem;background:transp
 
 <main>
 
+<section class="quick-actions">
+  <div class="quick-actions-title">What would you like to do?</div>
+  <div class="quick-actions-sub">Choose a focus and jump straight to the section you need.</div>
+  <div class="quick-actions-grid">
+    <article class="qa-card">
+      <div class="qa-title">Plan My Week</div>
+      <div class="qa-desc">Start with your weekly structure and plan your sessions first.</div>
+      <button class="qa-btn" data-tab-target="plan" data-scroll-target="planner-section">Go to planner</button>
+    </article>
+    <article class="qa-card">
+      <div class="qa-title">Review My Progress</div>
+      <div class="qa-desc">Check completion, session balance, and progress dashboard trends.</div>
+      <button class="qa-btn" data-tab-target="plan" data-scroll-target="dashboard-section">Open dashboard</button>
+    </article>
+    <article class="qa-card">
+      <div class="qa-title">Reflect &amp; Adjust</div>
+      <div class="qa-desc">Capture what improved, what felt weak, and next-week priorities.</div>
+      <button class="qa-btn" data-tab-target="plan" data-scroll-target="reflection-section">Open reflection</button>
+    </article>
+    <article class="qa-card">
+      <div class="qa-title">Training Focus Reference</div>
+      <div class="qa-desc">Browse movement options and match exercises to your priorities.</div>
+      <button class="qa-btn" data-tab-target="plan" data-scroll-target="reference-section">Open reference</button>
+    </article>
+    <article class="qa-card">
+      <div class="qa-title">Research &amp; Sources</div>
+      <div class="qa-desc">Review the coaches, programmes, and studies behind this matrix.</div>
+      <button class="qa-btn" data-tab-target="research" data-scroll-target="sources-section">View sources</button>
+    </article>
+  </div>
+</section>
+
 <!-- PLAN BUILDER VIEW -->
 <div class="view active" id="view-plan">
-  <section class="planner-section planner-main">
+  <section class="planner-section planner-main" id="planner-section">
     <div class="sh">Weekly Planner</div>
     <div class="ss">Plan first, then choose movement details. Use this section to structure your week and keep training intentional.</div>
     <div class="plan-wrap">
@@ -858,10 +898,10 @@ main{max-width:1150px;margin:0 auto;padding:2.5rem 2rem 3.5rem;background:transp
             </div>
           </div>
 
-          <div class="weekly-title" style="margin-top:0.95rem;">Progress Dashboard</div>
+          <div class="weekly-title" id="dashboard-section" style="margin-top:0.95rem;">Progress Dashboard</div>
           <div class="weekly-summary" id="weekly-summary"></div>
           <div class="session-balance" id="session-balance"></div>
-          <div class="weekly-title" style="margin-top:0.95rem;">Reflection</div>
+          <div class="weekly-title" id="reflection-section" style="margin-top:0.95rem;">Reflection</div>
           <div class="weekly-reflection" id="weekly-reflection">
             <div class="weekly-reflection-title">Weekly Reflection</div>
             <div class="weekly-reflection-row">
@@ -888,7 +928,7 @@ main{max-width:1150px;margin:0 auto;padding:2.5rem 2rem 3.5rem;background:transp
     </div>
   </section>
 
-  <section class="planner-section">
+  <section class="planner-section" id="reference-section">
     <div class="sh">Training Focus Reference</div>
     <div class="ss">Use this as your movement library after planning your week.</div>
     <div class="pp plan-library collapsed" id="plan-library">
@@ -979,6 +1019,7 @@ main{max-width:1150px;margin:0 auto;padding:2.5rem 2rem 3.5rem;background:transp
 
 <!-- RESEARCH VIEW -->
 <div class="view" id="view-research">
+  <div id="sources-section"></div>
   <div class="sh">Research & Sources</div>
   <div class="ss">The coaches, scientists, and programmes whose methods inform this matrix</div>
   <div class="research-grid" id="research-grid"></div>
@@ -2053,13 +2094,28 @@ function initWeeklyPlanner() {
 initWeeklyPlanner();
 
 // ── TABS ───────────────────────────────────────────────────
+function openTab(tabName){
+  const nextTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+  const nextView = document.getElementById('view-'+tabName);
+  if (!nextTab || !nextView) return;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  nextTab.classList.add('active');
+  nextView.classList.add('active');
+}
+
 document.querySelectorAll('.tab').forEach(tab=>{
-  tab.onclick=()=>{
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('view-'+tab.dataset.tab).classList.add('active');
-  };
+  tab.onclick=()=>openTab(tab.dataset.tab);
+});
+
+document.querySelectorAll('.qa-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const tabTarget = btn.dataset.tabTarget;
+    const scrollTarget = btn.dataset.scrollTarget;
+    openTab(tabTarget);
+    const targetEl = document.getElementById(scrollTarget);
+    if (targetEl) targetEl.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
 });
 
 </script>
