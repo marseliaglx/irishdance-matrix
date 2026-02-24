@@ -515,6 +515,13 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
 .session-balance-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--rose));border-radius:4px;transition:width 0.35s ease;}
 .session-balance-pct{font-size:0.6rem;color:#6e1732;text-align:right;font-weight:700;}
 .session-balance-note{margin-top:0.52rem;font-size:0.6rem;color:#7d4760;line-height:1.45;}
+.weekly-reflection{margin-top:0.7rem;padding:0.65rem;background:#fff;border:1px solid #e4bccb;border-radius:8px;}
+.weekly-reflection-title{font-size:0.63rem;font-weight:700;color:#8f3f62;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;}
+.weekly-reflection-row{margin-bottom:0.45rem;}
+.weekly-reflection-row:last-child{margin-bottom:0;}
+.weekly-reflection-label{display:block;font-size:0.62rem;font-weight:700;color:#8f3f62;margin-bottom:0.2rem;}
+.weekly-reflection-input{width:100%;min-height:58px;padding:0.38rem 0.44rem;border:1px solid #e4bccb;border-radius:6px;background:#fffafc;color:#6e1732;font-size:0.62rem;line-height:1.45;resize:vertical;font-family:inherit;}
+.weekly-reflection-input:focus{outline:none;border-color:#d88ead;box-shadow:0 0 0 2px rgba(194,24,91,0.1);}
 
 .empty-st{text-align:center;padding:2.5rem 1rem;color:#f5d0de;}
 .empty-icon{font-size:2.5rem;display:block;margin:0 auto 0.6rem;opacity:0.4;}
@@ -970,6 +977,25 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
         </div>
         <div class="weekly-summary" id="weekly-summary"></div>
         <div class="session-balance" id="session-balance"></div>
+        <div class="weekly-reflection" id="weekly-reflection">
+          <div class="weekly-reflection-title">Weekly Reflection</div>
+          <div class="weekly-reflection-row">
+            <label class="weekly-reflection-label" for="reflection-improved">What improved this week?</label>
+            <textarea class="weekly-reflection-input" id="reflection-improved" placeholder="Highlight your biggest progress win..."></textarea>
+          </div>
+          <div class="weekly-reflection-row">
+            <label class="weekly-reflection-label" for="reflection-weakest">What felt weakest?</label>
+            <textarea class="weekly-reflection-input" id="reflection-weakest" placeholder="Note where form, stamina, or timing dropped..."></textarea>
+          </div>
+          <div class="weekly-reflection-row">
+            <label class="weekly-reflection-label" for="reflection-coach">Most frequent correction from coach?</label>
+            <textarea class="weekly-reflection-input" id="reflection-coach" placeholder="Capture the cue you heard most often..."></textarea>
+          </div>
+          <div class="weekly-reflection-row">
+            <label class="weekly-reflection-label" for="reflection-next-week">Notes for next week?</label>
+            <textarea class="weekly-reflection-input" id="reflection-next-week" placeholder="Set one or two key focuses for next week..."></textarea>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1800,7 +1826,9 @@ function renderPlan() {
 const WEEK_DAYS = ['mon','tue','wed','thu','fri','sat','sun'];
 const WEEKLY_PLANNER_STORAGE_KEY = 'weekly-planner-v1';
 const WEEKLY_COMPLETED_STORAGE_KEY = 'weekly-completed-v1';
+const WEEKLY_REFLECTION_STORAGE_KEY = 'weekly-reflection-v1';
 const SESSION_BALANCE_CATEGORIES = ['Strength','Mobility','Stamina','Recovery','Technique'];
+const REFLECTION_FIELDS = ['improved','weakest','coach','next-week'];
 
 function getSessionBalanceCategory(exercise) {
   if (exercise.cat === 'recovery') return 'Recovery';
@@ -1858,6 +1886,18 @@ function saveWeeklyPlannerState() {
   localStorage.setItem(WEEKLY_COMPLETED_STORAGE_KEY, JSON.stringify(getCompletedState()));
 }
 
+function getWeeklyReflectionState() {
+  return REFLECTION_FIELDS.reduce((acc, fieldId) => {
+    const field = document.getElementById(`reflection-${fieldId}`);
+    acc[fieldId] = field ? field.value : '';
+    return acc;
+  }, {});
+}
+
+function saveWeeklyReflectionState() {
+  localStorage.setItem(WEEKLY_REFLECTION_STORAGE_KEY, JSON.stringify(getWeeklyReflectionState()));
+}
+
 function renderWeeklySummary() {
   const summary = document.getElementById('weekly-summary');
   const plannerState = getPlannerState();
@@ -1894,6 +1934,7 @@ function initWeeklyPlanner() {
 
   const storedPlanner = JSON.parse(localStorage.getItem(WEEKLY_PLANNER_STORAGE_KEY) || '{}');
   const storedCompleted = JSON.parse(localStorage.getItem(WEEKLY_COMPLETED_STORAGE_KEY) || '{}');
+  const storedReflection = JSON.parse(localStorage.getItem(WEEKLY_REFLECTION_STORAGE_KEY) || '{}');
 
   WEEK_DAYS.forEach(day => {
     const daySelect = document.getElementById(`day-${day}`);
@@ -1910,6 +1951,13 @@ function initWeeklyPlanner() {
       saveWeeklyPlannerState();
       renderWeeklySummary();
     });
+  });
+
+  REFLECTION_FIELDS.forEach(fieldId => {
+    const reflectionField = document.getElementById(`reflection-${fieldId}`);
+    if (!reflectionField) return;
+    reflectionField.value = typeof storedReflection[fieldId] === 'string' ? storedReflection[fieldId] : '';
+    reflectionField.addEventListener('input', saveWeeklyReflectionState);
   });
 
   renderWeeklySummary();
