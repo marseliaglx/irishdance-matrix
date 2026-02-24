@@ -115,7 +115,7 @@ h1{
   filter:drop-shadow(0 8px 18px rgba(212,106,151,0.28));
   display:block;
 }
-.hero-sections{position:relative;max-width:1150px;margin:0 auto;padding:0 2rem 3rem;}
+.hero-sections{position:relative;max-width:1150px;margin:0 auto;padding:0 2rem 3.35rem;}
 .hero-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.25rem;margin-top:1.6rem;}
 .hero-card{
   background:#fff;
@@ -130,6 +130,12 @@ h1{
 .coach-support h2{font-size:1.15rem;color:#2a1220;margin-bottom:0.75rem;}
 .coach-support p{font-size:0.84rem;color:#56364a;line-height:1.8;margin-bottom:0.75rem;max-width:900px;}
 .coach-support p:last-child{margin-bottom:0;}
+.workflow-section{margin-top:2rem;background:#fff;border:1px solid #eed3df;border-radius:16px;padding:1.2rem 1.3rem;box-shadow:0 8px 20px rgba(120,58,87,0.06);}
+.workflow-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:#5d1738;margin-bottom:0.35rem;}
+.workflow-sub{font-size:0.75rem;color:#8a5070;text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.8rem;}
+.workflow-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.6rem;}
+.workflow-step{padding:0.7rem 0.75rem;border:1px solid #f2dce5;border-radius:10px;background:#fffafd;font-size:0.76rem;color:#5f3b4f;line-height:1.55;}
+.workflow-step strong{display:block;font-size:0.68rem;color:#9a5070;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.12rem;}
 
 /* ── NAV ── */
 .nav{
@@ -368,7 +374,7 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
 }
 
 /* ── PLAN BUILDER ── */
-.plan-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;}
+.plan-wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:1.4rem;align-items:start;}
 @media(max-width:700px){.plan-wrap{grid-template-columns:1fr}}
 .pp{background:var(--card);border:1.5px solid var(--border);border-radius:11px;overflow:hidden;}
 .pp-head{
@@ -381,6 +387,8 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
   color:var(--pink-light);cursor:pointer;letter-spacing:0.04em;
 }
 .pp-list{padding:0.4rem;max-height:420px;overflow-y:auto;}
+.plan-library{margin-top:1rem;}
+.plan-library-note{font-size:0.72rem;color:#87526f;margin-bottom:0.55rem;line-height:1.55;}
 .pp-section-lbl{
   font-size:0.6rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
   color:var(--gold);padding:0.5rem 0.6rem 0.25rem;
@@ -806,8 +814,8 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
     <div class="header-text">
       <div class="header-tag">Training Planner &amp; Reflection Matrix</div>
       <h1>Irish Dance Matrix</h1>
-      <div class="header-sub">A training planning &amp; reflection tool for serious dancers.</div>
-      <div class="header-copy">Train with intention. Track what you actually worked on. See patterns. Adjust smarter.</div>
+      <div class="header-sub">A training planning &amp; reflection dashboard for serious dancers.</div>
+      <div class="header-copy">Plan your week. Track what you actually did. Reflect on patterns. Improve with intention.</div>
       <div class="header-note">Designed to complement professional coaching — not replace it.</div>
       <div class="header-credit">Created by <strong>Marcela</strong></div>
     </div>
@@ -837,25 +845,104 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
       <p>This matrix organises training principles and patterns. It does not replace professional guidance.</p>
       <p>Always prioritise your coach, physiotherapist, or personal trainer.</p>
     </div>
+
+    <section class="workflow-section" aria-label="Planning and reflection workflow">
+      <div class="workflow-title">Plan → Track → Reflect → Improve</div>
+      <div class="workflow-sub">Planning &amp; Analysis Flow</div>
+      <div class="workflow-steps">
+        <div class="workflow-step"><strong>Plan</strong>Plan your weekly focus areas.</div>
+        <div class="workflow-step"><strong>Track</strong>Track sessions and effort.</div>
+        <div class="workflow-step"><strong>Review</strong>Review consistency and load.</div>
+        <div class="workflow-step"><strong>Reflect</strong>Reflect and adjust with your coach.</div>
+      </div>
+    </section>
   </section>
 </header>
 
 <nav class="nav">
   <div class="nav-inner">
-    <div class="tab active" data-tab="goals">Feis Goals</div>
+    <div class="tab active" data-tab="plan">Build a Session</div>
+    <div class="tab" data-tab="goals">Feis Goals</div>
     <div class="tab" data-tab="exercises">Exercise Lexicon</div>
     <div class="tab" data-tab="muscles">By Muscle Group</div>
     <div class="tab" data-tab="pillars">All 7 Pillars</div>
     <div class="tab" data-tab="injuries">Injury Prevention</div>
     <div class="tab" data-tab="research">Research Sources</div>
-    <div class="tab" data-tab="plan">Build a Session</div>
   </div>
 </nav>
 
 <main>
 
+<!-- PLAN BUILDER VIEW -->
+<div class="view active" id="view-plan">
+  <div class="sh">Build your session</div>
+  <div class="ss">Plan first, then choose movement details. Use this section to structure the week, track effort, and reflect before selecting exercises.</div>
+  <div class="plan-wrap">
+    <div class="po">
+      <div class="po-head">
+        <div class="po-title">Weekly Planner &amp; Reflection 🌸</div>
+        <button class="print-btn" onclick="window.print()">Print</button>
+      </div>
+      <div class="po-body" id="po-body">
+        <div class="empty-st">
+          <span class="empty-icon">💎</span>
+          <div class="empty-text">Select exercises below<br>to build your session</div>
+        </div>
+      </div>
+      <div class="weekly-planner">
+        <div class="weekly-title">Weekly Session Planner</div>
+        <div class="weekly-note">Keep it simple: plan training and include at least one full rest day.</div>
+        <div class="week-row"><label for="day-mon">Mon</label><select id="day-mon"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
+        <div class="week-row"><label for="day-tue">Tue</label><select id="day-tue"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
+        <div class="week-row"><label for="day-wed">Wed</label><select id="day-wed"><option>Training session</option><option>Light recovery</option><option selected>Rest day</option></select></div>
+        <div class="week-row"><label for="day-thu">Thu</label><select id="day-thu"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
+        <div class="week-row"><label for="day-fri">Fri</label><select id="day-fri"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
+        <div class="week-row"><label for="day-sat">Sat</label><select id="day-sat"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
+        <div class="week-row"><label for="day-sun">Sun</label><select id="day-sun"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
+        <div class="weekly-completed">
+          <div class="weekly-completed-title">Completed this week</div>
+          <div class="weekly-completed-grid" id="weekly-completed-grid"></div>
+          <div class="weekly-rpe-row">
+            <label class="weekly-rpe-label" for="weekly-rpe">Average RPE (1–10)</label>
+            <input class="weekly-rpe-input" id="weekly-rpe" type="number" min="1" max="10" step="0.1" placeholder="7.0">
+          </div>
+        </div>
+        <div class="weekly-summary" id="weekly-summary"></div>
+        <div class="session-balance" id="session-balance"></div>
+        <div class="weekly-reflection" id="weekly-reflection">
+          <div class="weekly-reflection-title">Weekly Reflection</div>
+          <div class="weekly-reflection-row">
+            <label class="weekly-reflection-label" for="reflection-improved">What improved this week?</label>
+            <textarea class="weekly-reflection-input" id="reflection-improved" placeholder="Highlight your biggest progress win..."></textarea>
+          </div>
+          <div class="weekly-reflection-row">
+            <label class="weekly-reflection-label" for="reflection-weakest">What felt weakest?</label>
+            <textarea class="weekly-reflection-input" id="reflection-weakest" placeholder="Note where form, stamina, or timing dropped..."></textarea>
+          </div>
+          <div class="weekly-reflection-row">
+            <label class="weekly-reflection-label" for="reflection-coach">Most frequent correction from coach?</label>
+            <textarea class="weekly-reflection-input" id="reflection-coach" placeholder="Capture the cue you heard most often..."></textarea>
+          </div>
+          <div class="weekly-reflection-row">
+            <label class="weekly-reflection-label" for="reflection-next-week">Notes for next week?</label>
+            <textarea class="weekly-reflection-input" id="reflection-next-week" placeholder="Set one or two key focuses for next week..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pp plan-library">
+      <div class="pp-head">
+        <div class="pp-title">Choose exercises 💪</div>
+        <div class="pp-toggle" id="pp-toggle">Show compound only</div>
+      </div>
+      <div class="plan-library-note">After planning your week above, choose exercises that match your priorities and coach feedback.</div>
+      <div class="pp-list" id="pp-list"></div>
+    </div>
+  </div>
+</div>
+
 <!-- GOALS VIEW -->
-<div class="view active" id="view-goals">
+<div class="view" id="view-goals">
   <div class="sh">What do you want to improve for your Feis?</div>
   <div class="ss">Select a goal below — each one is based on what judges look for at Feiseanna and Oireachtas level</div>
   <div class="goal-grid" id="goal-grid"></div>
@@ -931,73 +1018,6 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
   <div class="sh">Research & Sources</div>
   <div class="ss">The coaches, scientists, and programmes whose methods inform this matrix</div>
   <div class="research-grid" id="research-grid"></div>
-</div>
-
-<!-- PLAN BUILDER VIEW -->
-<div class="view" id="view-plan">
-  <div class="sh">Build your session</div>
-  <div class="ss">Great for planning your weekly sessions. Gold stripe = compound. Tick exercises to build your plan and see 7-pillar coverage.</div>
-  <div class="plan-wrap">
-    <div class="pp">
-      <div class="pp-head">
-        <div class="pp-title">Choose exercises 💪</div>
-        <div class="pp-toggle" id="pp-toggle">Show compound only</div>
-      </div>
-      <div class="pp-list" id="pp-list"></div>
-    </div>
-    <div class="po">
-      <div class="po-head">
-        <div class="po-title">Session Plan 🌸</div>
-        <button class="print-btn" onclick="window.print()">Print</button>
-      </div>
-      <div class="po-body" id="po-body">
-        <div class="empty-st">
-          <span class="empty-icon">💎</span>
-          <div class="empty-text">Select exercises on the left<br>to build your session</div>
-        </div>
-      </div>
-      <div class="weekly-planner">
-        <div class="weekly-title">Weekly Session Planner</div>
-        <div class="weekly-note">Keep it simple: plan training and include at least one full rest day.</div>
-        <div class="week-row"><label for="day-mon">Mon</label><select id="day-mon"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
-        <div class="week-row"><label for="day-tue">Tue</label><select id="day-tue"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
-        <div class="week-row"><label for="day-wed">Wed</label><select id="day-wed"><option>Training session</option><option>Light recovery</option><option selected>Rest day</option></select></div>
-        <div class="week-row"><label for="day-thu">Thu</label><select id="day-thu"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
-        <div class="week-row"><label for="day-fri">Fri</label><select id="day-fri"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
-        <div class="week-row"><label for="day-sat">Sat</label><select id="day-sat"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
-        <div class="week-row"><label for="day-sun">Sun</label><select id="day-sun"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
-        <div class="weekly-completed">
-          <div class="weekly-completed-title">Completed this week</div>
-          <div class="weekly-completed-grid" id="weekly-completed-grid"></div>
-          <div class="weekly-rpe-row">
-            <label class="weekly-rpe-label" for="weekly-rpe">Average RPE (1–10)</label>
-            <input class="weekly-rpe-input" id="weekly-rpe" type="number" min="1" max="10" step="0.1" placeholder="7.0">
-          </div>
-        </div>
-        <div class="weekly-summary" id="weekly-summary"></div>
-        <div class="session-balance" id="session-balance"></div>
-        <div class="weekly-reflection" id="weekly-reflection">
-          <div class="weekly-reflection-title">Weekly Reflection</div>
-          <div class="weekly-reflection-row">
-            <label class="weekly-reflection-label" for="reflection-improved">What improved this week?</label>
-            <textarea class="weekly-reflection-input" id="reflection-improved" placeholder="Highlight your biggest progress win..."></textarea>
-          </div>
-          <div class="weekly-reflection-row">
-            <label class="weekly-reflection-label" for="reflection-weakest">What felt weakest?</label>
-            <textarea class="weekly-reflection-input" id="reflection-weakest" placeholder="Note where form, stamina, or timing dropped..."></textarea>
-          </div>
-          <div class="weekly-reflection-row">
-            <label class="weekly-reflection-label" for="reflection-coach">Most frequent correction from coach?</label>
-            <textarea class="weekly-reflection-input" id="reflection-coach" placeholder="Capture the cue you heard most often..."></textarea>
-          </div>
-          <div class="weekly-reflection-row">
-            <label class="weekly-reflection-label" for="reflection-next-week">Notes for next week?</label>
-            <textarea class="weekly-reflection-input" id="reflection-next-week" placeholder="Set one or two key focuses for next week..."></textarea>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
   <div class="page-inspo-bottom">🌟 Keep showing up — your strength, style, and sparkle are built one brave session at a time.</div>
