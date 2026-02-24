@@ -505,7 +505,14 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
 .weekly-summary{margin-top:0.65rem;padding:0.6rem;background:#fff;border:1px solid #e4bccb;border-radius:8px;}
 .weekly-metric{font-size:0.68rem;color:#6e1732;line-height:1.55;}
 .weekly-metric strong{color:#511127;}
+.weekly-streaks{margin-top:0.5rem;display:flex;gap:0.4rem;flex-wrap:wrap;}
+.weekly-streak-chip{font-size:0.58rem;color:#7d4760;background:#fff8fb;border:1px solid #f0d3de;border-radius:999px;padding:0.2rem 0.5rem;}
 .weekly-message{margin-top:0.42rem;padding:0.45rem 0.5rem;border-radius:6px;background:#fff4f7;border:1px solid #f2cbd9;font-size:0.63rem;color:#8f3f62;font-weight:700;}
+.weekly-rpe-row{margin-top:0.55rem;display:grid;grid-template-columns:1fr 72px;gap:0.4rem;align-items:center;}
+.weekly-rpe-label{font-size:0.62rem;font-weight:700;color:#8f3f62;}
+.weekly-rpe-input{border:1px solid #e4bccb;border-radius:6px;background:#fff;padding:0.28rem 0.35rem;font-size:0.62rem;color:#6e1732;}
+.weekly-rpe-input:focus{outline:none;border-color:#d88ead;box-shadow:0 0 0 2px rgba(194,24,91,0.1);}
+.weekly-recovery-message{margin-top:0.42rem;padding:0.45rem 0.5rem;border-radius:6px;background:#fff8f2;border:1px solid #f1dcc6;font-size:0.63rem;color:#87522a;font-weight:700;}
 .session-balance{margin-top:0.7rem;padding:0.65rem;background:#fff;border:1px solid #e4bccb;border-radius:8px;}
 .session-balance-title{font-size:0.63rem;font-weight:700;color:#8f3f62;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.45rem;}
 .session-balance-row{display:grid;grid-template-columns:78px 1fr 34px;align-items:center;gap:0.4rem;margin-bottom:0.32rem;}
@@ -974,6 +981,10 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
         <div class="weekly-completed">
           <div class="weekly-completed-title">Completed this week</div>
           <div class="weekly-completed-grid" id="weekly-completed-grid"></div>
+          <div class="weekly-rpe-row">
+            <label class="weekly-rpe-label" for="weekly-rpe">Average RPE (1–10)</label>
+            <input class="weekly-rpe-input" id="weekly-rpe" type="number" min="1" max="10" step="0.1" placeholder="7.0">
+          </div>
         </div>
         <div class="weekly-summary" id="weekly-summary"></div>
         <div class="session-balance" id="session-balance"></div>
@@ -1827,8 +1838,80 @@ const WEEK_DAYS = ['mon','tue','wed','thu','fri','sat','sun'];
 const WEEKLY_PLANNER_STORAGE_KEY = 'weekly-planner-v1';
 const WEEKLY_COMPLETED_STORAGE_KEY = 'weekly-completed-v1';
 const WEEKLY_REFLECTION_STORAGE_KEY = 'weekly-reflection-v1';
+const WEEKLY_STREAK_STORAGE_KEY = 'weekly-streak-v1';
+const WEEKLY_RPE_STORAGE_KEY = 'weekly-rpe-v1';
 const SESSION_BALANCE_CATEGORIES = ['Strength','Mobility','Stamina','Recovery','Technique'];
 const REFLECTION_FIELDS = ['improved','weakest','coach','next-week'];
+
+function getTodayISODate() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function getWeekStartISO(dateInput) {
+  const date = new Date(`${dateInput}T00:00:00`);
+  const weekday = (date.getDay() + 6) % 7;
+  date.setDate(date.getDate() - weekday);
+  return date.toISOString().slice(0, 10);
+}
+
+function getDefaultStreakData() {
+  return { completedDates: [], weeklyCounts: {} };
+}
+
+function getStreakData() {
+  const raw = JSON.parse(localStorage.getItem(WEEKLY_STREAK_STORAGE_KEY) || '{}');
+  return {
+    completedDates: Array.isArray(raw.completedDates) ? raw.completedDates : [],
+    weeklyCounts: raw.weeklyCounts && typeof raw.weeklyCounts === 'object' ? raw.weeklyCounts : {}
+  };
+}
+
+function saveStreakData(data) {
+  localStorage.setItem(WEEKLY_STREAK_STORAGE_KEY, JSON.stringify(data || getDefaultStreakData()));
+}
+
+function trackCompletionForStreak(isCompleted) {
+  if (!isCompleted) return;
+  const today = getTodayISODate();
+  const weekStart = getWeekStartISO(today);
+  const streakData = getStreakData();
+
+  if (!streakData.completedDates.includes(today)) {
+    streakData.completedDates.push(today);
+    streakData.weeklyCounts[weekStart] = (streakData.weeklyCounts[weekStart] || 0) + 1;
+    saveStreakData(streakData);
+  }
+}
+
+function getConsecutiveDayStreak(streakData) {
+  const completedSet = new Set(streakData.completedDates || []);
+  let streak = 0;
+  const cursor = new Date(`${getTodayISODate()}T00:00:00`);
+  while (completedSet.has(cursor.toISOString().slice(0, 10))) {
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return streak;
+}
+
+function getWeeklyStreak(streakData) {
+  const qualifyingWeeks = Object.keys(streakData.weeklyCounts || {})
+    .filter(weekStart => streakData.weeklyCounts[weekStart] >= 3)
+    .sort();
+
+  let streak = 0;
+  let cursor = getWeekStartISO(getTodayISODate());
+  const qualifyingSet = new Set(qualifyingWeeks);
+
+  while (qualifyingSet.has(cursor)) {
+    streak += 1;
+    const previousWeek = new Date(`${cursor}T00:00:00`);
+    previousWeek.setDate(previousWeek.getDate() - 7);
+    cursor = previousWeek.toISOString().slice(0, 10);
+  }
+
+  return streak;
+}
 
 function getSessionBalanceCategory(exercise) {
   if (exercise.cat === 'recovery') return 'Recovery';
@@ -1902,6 +1985,8 @@ function renderWeeklySummary() {
   const summary = document.getElementById('weekly-summary');
   const plannerState = getPlannerState();
   const completedState = getCompletedState();
+  const streakData = getStreakData();
+  const averageRPE = parseFloat(localStorage.getItem(WEEKLY_RPE_STORAGE_KEY) || '0');
 
   // Weekly consistency calculations happen here:
   // - plannedSessions: number of days set to "Training session"
@@ -1910,12 +1995,19 @@ function renderWeeklySummary() {
   const plannedSessions = WEEK_DAYS.filter(day => plannerState[day] === 'Training session').length;
   const completedSessions = WEEK_DAYS.filter(day => plannerState[day] === 'Training session' && completedState[day]).length;
   const consistency = plannedSessions ? Math.round((completedSessions / plannedSessions) * 100) : 0;
+  const consecutiveDaysStreak = getConsecutiveDayStreak(streakData);
+  const weeklyStreak = getWeeklyStreak(streakData);
 
   summary.innerHTML = `
     <div class="weekly-metric"><strong>Total planned sessions:</strong> ${plannedSessions}</div>
     <div class="weekly-metric"><strong>Total completed sessions:</strong> ${completedSessions}</div>
     <div class="weekly-metric"><strong>Consistency:</strong> ${consistency}%</div>
+    <div class="weekly-streaks">
+      <div class="weekly-streak-chip">🔥 Day streak: ${consecutiveDaysStreak}</div>
+      <div class="weekly-streak-chip">📆 Weekly streak (3+): ${weeklyStreak}</div>
+    </div>
     ${consistency < 50 ? '<div class="weekly-message">Progress compounds through repetition. Even short sessions count.</div>' : ''}
+    ${averageRPE > 7 ? '<div class="weekly-recovery-message">Recovery builds performance. Consider mobility or rest.</div>' : ''}
   `;
 
   renderSessionBalance();
@@ -1923,6 +2015,7 @@ function renderWeeklySummary() {
 
 function initWeeklyPlanner() {
   const completedGrid = document.getElementById('weekly-completed-grid');
+  const weeklyRPEInput = document.getElementById('weekly-rpe');
   const dayLabels = { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun' };
 
   completedGrid.innerHTML = WEEK_DAYS.map(day => `
@@ -1935,6 +2028,12 @@ function initWeeklyPlanner() {
   const storedPlanner = JSON.parse(localStorage.getItem(WEEKLY_PLANNER_STORAGE_KEY) || '{}');
   const storedCompleted = JSON.parse(localStorage.getItem(WEEKLY_COMPLETED_STORAGE_KEY) || '{}');
   const storedReflection = JSON.parse(localStorage.getItem(WEEKLY_REFLECTION_STORAGE_KEY) || '{}');
+  const storedRPE = localStorage.getItem(WEEKLY_RPE_STORAGE_KEY);
+
+  if (!localStorage.getItem(WEEKLY_STREAK_STORAGE_KEY)) {
+    saveStreakData(getDefaultStreakData());
+  }
+  weeklyRPEInput.value = storedRPE || '';
 
   WEEK_DAYS.forEach(day => {
     const daySelect = document.getElementById(`day-${day}`);
@@ -1949,8 +2048,14 @@ function initWeeklyPlanner() {
     });
     dayCheck.addEventListener('change', () => {
       saveWeeklyPlannerState();
+      trackCompletionForStreak(dayCheck.checked);
       renderWeeklySummary();
     });
+  });
+
+  weeklyRPEInput.addEventListener('input', () => {
+    localStorage.setItem(WEEKLY_RPE_STORAGE_KEY, weeklyRPEInput.value);
+    renderWeeklySummary();
   });
 
   REFLECTION_FIELDS.forEach(fieldId => {
