@@ -497,6 +497,15 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
   border:1px solid #e4bccb;border-radius:6px;background:#fff;
   padding:0.3rem 0.45rem;font-family:'Nunito',sans-serif;font-size:0.67rem;color:#442031;
 }
+.weekly-completed{margin-top:0.55rem;padding-top:0.55rem;border-top:1px solid #edd2de;}
+.weekly-completed-title{font-size:0.63rem;font-weight:700;color:#8f3f62;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.35rem;}
+.weekly-completed-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0.3rem;}
+.weekly-check{display:flex;flex-direction:column;align-items:center;gap:0.12rem;font-size:0.56rem;color:#8f3f62;}
+.weekly-check input{accent-color:#c2185b;}
+.weekly-summary{margin-top:0.65rem;padding:0.6rem;background:#fff;border:1px solid #e4bccb;border-radius:8px;}
+.weekly-metric{font-size:0.68rem;color:#6e1732;line-height:1.55;}
+.weekly-metric strong{color:#511127;}
+.weekly-message{margin-top:0.42rem;padding:0.45rem 0.5rem;border-radius:6px;background:#fff4f7;border:1px solid #f2cbd9;font-size:0.63rem;color:#8f3f62;font-weight:700;}
 
 .empty-st{text-align:center;padding:2.5rem 1rem;color:#f5d0de;}
 .empty-icon{font-size:2.5rem;display:block;margin:0 auto 0.6rem;opacity:0.4;}
@@ -946,6 +955,11 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
         <div class="week-row"><label for="day-fri">Fri</label><select id="day-fri"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
         <div class="week-row"><label for="day-sat">Sat</label><select id="day-sat"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
         <div class="week-row"><label for="day-sun">Sun</label><select id="day-sun"><option>Training session</option><option>Light recovery</option><option>Rest day</option></select></div>
+        <div class="weekly-completed">
+          <div class="weekly-completed-title">Completed this week</div>
+          <div class="weekly-completed-grid" id="weekly-completed-grid"></div>
+        </div>
+        <div class="weekly-summary" id="weekly-summary"></div>
       </div>
     </div>
   </div>
@@ -1768,6 +1782,88 @@ function renderPlan() {
       </div>`).join('')}
     </div>`;
 }
+
+
+const WEEK_DAYS = ['mon','tue','wed','thu','fri','sat','sun'];
+const WEEKLY_PLANNER_STORAGE_KEY = 'weekly-planner-v1';
+const WEEKLY_COMPLETED_STORAGE_KEY = 'weekly-completed-v1';
+
+function getPlannerState() {
+  return WEEK_DAYS.reduce((acc, day) => {
+    acc[day] = document.getElementById(`day-${day}`).value;
+    return acc;
+  }, {});
+}
+
+function getCompletedState() {
+  return WEEK_DAYS.reduce((acc, day) => {
+    const completedTick = document.getElementById(`done-${day}`);
+    acc[day] = !!(completedTick && completedTick.checked);
+    return acc;
+  }, {});
+}
+
+function saveWeeklyPlannerState() {
+  localStorage.setItem(WEEKLY_PLANNER_STORAGE_KEY, JSON.stringify(getPlannerState()));
+  localStorage.setItem(WEEKLY_COMPLETED_STORAGE_KEY, JSON.stringify(getCompletedState()));
+}
+
+function renderWeeklySummary() {
+  const summary = document.getElementById('weekly-summary');
+  const plannerState = getPlannerState();
+  const completedState = getCompletedState();
+
+  // Weekly consistency calculations happen here:
+  // - plannedSessions: number of days set to "Training session"
+  // - completedSessions: planned training days that are ticked complete
+  // - consistency: completed ÷ planned × 100 (or 0 if no planned sessions)
+  const plannedSessions = WEEK_DAYS.filter(day => plannerState[day] === 'Training session').length;
+  const completedSessions = WEEK_DAYS.filter(day => plannerState[day] === 'Training session' && completedState[day]).length;
+  const consistency = plannedSessions ? Math.round((completedSessions / plannedSessions) * 100) : 0;
+
+  summary.innerHTML = `
+    <div class="weekly-metric"><strong>Total planned sessions:</strong> ${plannedSessions}</div>
+    <div class="weekly-metric"><strong>Total completed sessions:</strong> ${completedSessions}</div>
+    <div class="weekly-metric"><strong>Consistency:</strong> ${consistency}%</div>
+    ${consistency < 50 ? '<div class="weekly-message">Progress compounds through repetition. Even short sessions count.</div>' : ''}
+  `;
+}
+
+function initWeeklyPlanner() {
+  const completedGrid = document.getElementById('weekly-completed-grid');
+  const dayLabels = { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun' };
+
+  completedGrid.innerHTML = WEEK_DAYS.map(day => `
+    <label class="weekly-check" for="done-${day}">
+      <input type="checkbox" id="done-${day}" aria-label="${dayLabels[day]} completed">
+      <span>${dayLabels[day]}</span>
+    </label>
+  `).join('');
+
+  const storedPlanner = JSON.parse(localStorage.getItem(WEEKLY_PLANNER_STORAGE_KEY) || '{}');
+  const storedCompleted = JSON.parse(localStorage.getItem(WEEKLY_COMPLETED_STORAGE_KEY) || '{}');
+
+  WEEK_DAYS.forEach(day => {
+    const daySelect = document.getElementById(`day-${day}`);
+    const dayCheck = document.getElementById(`done-${day}`);
+
+    if (storedPlanner[day]) daySelect.value = storedPlanner[day];
+    dayCheck.checked = !!storedCompleted[day];
+
+    daySelect.addEventListener('change', () => {
+      saveWeeklyPlannerState();
+      renderWeeklySummary();
+    });
+    dayCheck.addEventListener('change', () => {
+      saveWeeklyPlannerState();
+      renderWeeklySummary();
+    });
+  });
+
+  renderWeeklySummary();
+}
+
+initWeeklyPlanner();
 
 // ── TABS ───────────────────────────────────────────────────
 document.querySelectorAll('.tab').forEach(tab=>{
