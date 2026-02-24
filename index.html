@@ -506,6 +506,15 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
 .weekly-metric{font-size:0.68rem;color:#6e1732;line-height:1.55;}
 .weekly-metric strong{color:#511127;}
 .weekly-message{margin-top:0.42rem;padding:0.45rem 0.5rem;border-radius:6px;background:#fff4f7;border:1px solid #f2cbd9;font-size:0.63rem;color:#8f3f62;font-weight:700;}
+.session-balance{margin-top:0.7rem;padding:0.65rem;background:#fff;border:1px solid #e4bccb;border-radius:8px;}
+.session-balance-title{font-size:0.63rem;font-weight:700;color:#8f3f62;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.45rem;}
+.session-balance-row{display:grid;grid-template-columns:78px 1fr 34px;align-items:center;gap:0.4rem;margin-bottom:0.32rem;}
+.session-balance-row:last-of-type{margin-bottom:0;}
+.session-balance-label{font-size:0.64rem;color:#7d4760;}
+.session-balance-track{height:7px;border-radius:4px;background:#f4e1e8;overflow:hidden;}
+.session-balance-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--rose));border-radius:4px;transition:width 0.35s ease;}
+.session-balance-pct{font-size:0.6rem;color:#6e1732;text-align:right;font-weight:700;}
+.session-balance-note{margin-top:0.52rem;font-size:0.6rem;color:#7d4760;line-height:1.45;}
 
 .empty-st{text-align:center;padding:2.5rem 1rem;color:#f5d0de;}
 .empty-icon{font-size:2.5rem;display:block;margin:0 auto 0.6rem;opacity:0.4;}
@@ -960,6 +969,7 @@ main{max-width:1150px;margin:0 auto;padding:2rem;background:#fafafa;}
           <div class="weekly-completed-grid" id="weekly-completed-grid"></div>
         </div>
         <div class="weekly-summary" id="weekly-summary"></div>
+        <div class="session-balance" id="session-balance"></div>
       </div>
     </div>
   </div>
@@ -1760,6 +1770,7 @@ function renderPlan() {
   const sel = EX.filter(e=>chosen.has(e.id));
   if(!sel.length){
     body.innerHTML=`<div class="empty-st"><span class="empty-icon">💎</span><div class="empty-text">Select exercises on the left<br>to build your session</div></div>`;
+    renderSessionBalance();
     return;
   }
   const allGoals = GOALS.map(g=>g.title);
@@ -1781,12 +1792,51 @@ function renderPlan() {
         <div class="cov-bar"><div class="cov-fill" style="width:${covered.has(g)?100:0}%"></div></div>
       </div>`).join('')}
     </div>`;
+
+  renderSessionBalance();
 }
 
 
 const WEEK_DAYS = ['mon','tue','wed','thu','fri','sat','sun'];
 const WEEKLY_PLANNER_STORAGE_KEY = 'weekly-planner-v1';
 const WEEKLY_COMPLETED_STORAGE_KEY = 'weekly-completed-v1';
+const SESSION_BALANCE_CATEGORIES = ['Strength','Mobility','Stamina','Recovery','Technique'];
+
+function getSessionBalanceCategory(exercise) {
+  if (exercise.cat === 'recovery') return 'Recovery';
+  if (exercise.cat === 'mobility' || exercise.cat === 'flexibility') return 'Mobility';
+  if (exercise.cat === 'plyometric') return 'Stamina';
+  if (exercise.tags.includes('hard-shoe') || exercise.tags.includes('soft-shoe')) return 'Technique';
+  return 'Strength';
+}
+
+function renderSessionBalance() {
+  const balanceEl = document.getElementById('session-balance');
+  const selectedExercises = EX.filter(e => chosen.has(e.id));
+  const counts = SESSION_BALANCE_CATEGORIES.reduce((acc, category) => {
+    acc[category] = 0;
+    return acc;
+  }, {});
+
+  selectedExercises.forEach(exercise => {
+    const category = getSessionBalanceCategory(exercise);
+    counts[category] += 1;
+  });
+
+  const total = selectedExercises.length;
+  balanceEl.innerHTML = `
+    <div class="session-balance-title">Session category balance</div>
+    ${SESSION_BALANCE_CATEGORIES.map(category => {
+      const percentage = total ? Math.round((counts[category] / total) * 100) : 0;
+      return `<div class="session-balance-row">
+        <div class="session-balance-label">${category}</div>
+        <div class="session-balance-track"><div class="session-balance-fill" style="width:${percentage}%"></div></div>
+        <div class="session-balance-pct">${percentage}%</div>
+      </div>`;
+    }).join('')}
+    <div class="session-balance-note">Example balance patterns are informed by general sports science periodisation principles. Individual programming should reflect your coach’s priorities and recovery status.</div>
+  `;
+}
 
 function getPlannerState() {
   return WEEK_DAYS.reduce((acc, day) => {
@@ -1827,6 +1877,8 @@ function renderWeeklySummary() {
     <div class="weekly-metric"><strong>Consistency:</strong> ${consistency}%</div>
     ${consistency < 50 ? '<div class="weekly-message">Progress compounds through repetition. Even short sessions count.</div>' : ''}
   `;
+
+  renderSessionBalance();
 }
 
 function initWeeklyPlanner() {
