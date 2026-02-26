@@ -795,9 +795,35 @@ main{max-width:1150px;margin:0 auto;padding:1.7rem 2rem 3.8rem;background:transp
   transition:background 0.15s;
 }
 #acp-send:hover{background:#c21078;}
+
+
+/* ── ACCESSIBILITY + POLISH OVERRIDES ── */
+body{font-size:17px;line-height:1.6;}
+.nav{position:sticky;top:0;z-index:900;background:rgba(255,255,255,0.94);backdrop-filter:saturate(140%) blur(4px);}
+.tab{font-size:0.88rem;font-weight:700;padding:0.95rem 1.15rem;}
+.sh{font-size:clamp(2rem,3.5vw,2.45rem);}
+.ss,.header-copy,.quick-actions-sub,.hero-disclaimer{font-size:1.02rem;line-height:1.65;}
+.goal-title,.ec-name,.mc-name,.qa-title,.rc-title{font-size:0.98rem;line-height:1.35;}
+.goal-desc,.qa-desc,.mc-role,.ec-type,.ec-reps,.exitem-name,.rc-content,.weekly-note{font-size:0.9rem;color:#6c3f55;}
+.fb,.tm,.tg,.tc,.cat-pill,.cbadge,.fbadge,.ptag{font-size:0.78rem;}
+.exs-label,.rp-col-title,.weekly-title,.session-balance-title,.weekly-reflection-title{font-size:0.78rem;}
+.exs-content,.exs-tip,.exs-research,.bitem,.weekly-metric,.weekly-message,.weekly-recovery-message,.session-balance-note{font-size:0.9rem;}
+.week-row label,.weekly-rpe-label,.weekly-reflection-label,.session-balance-label{font-size:0.85rem;}
+.week-row select,.weekly-rpe-input,.weekly-reflection-input,.qa-btn,#acp-input,.acp-msg{font-size:0.92rem;}
+.main-skip-link{position:absolute;left:0.75rem;top:-3rem;padding:0.5rem 0.85rem;border-radius:8px;background:#fff;color:#7f1f4b;font-weight:700;border:2px solid #d96f9c;z-index:2000;transition:top .2s ease;}
+.main-skip-link:focus{top:0.75rem;}
+button:focus-visible,.tab:focus-visible,.goal-card:focus-visible,.mc:focus-visible,.ec-head:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid rgba(127,31,75,0.35);outline-offset:2px;}
+@media (max-width: 720px){
+  body{font-size:16px;}
+  .header-inner{padding:2.2rem 1.1rem 1.2rem;grid-template-columns:1fr;}
+  .header-sub{font-size:1.15rem;}
+  .header-copy{font-size:0.98rem;}
+}
+
 </style>
 </head>
 <body>
+<a class="main-skip-link" href="#main-content">Skip to main content</a>
 
 <header>
   <div class="header-inner">
@@ -828,7 +854,7 @@ main{max-width:1150px;margin:0 auto;padding:1.7rem 2rem 3.8rem;background:transp
   </div>
 </nav>
 
-<main>
+<main id="main-content">
 
 <section class="quick-actions">
   <div class="quick-actions-title">What would you like to do?</div>
