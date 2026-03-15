@@ -23,8 +23,13 @@
 <script>
 // Register service worker for offline support (GitHub Pages compatible)
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  window.addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('./sw.js');
+      reg.update();
+    } catch (_) {
+      // Ignore service-worker install issues so the page still renders online.
+    }
   });
 }
 
