@@ -1,55 +1,55 @@
-// Dance Matrix Service Worker — caches everything for offline use
-const CACHE_NAME = 'dance-matrix-v1';
+// Dance Matrix Service Worker — resilient offline support without breaking page loads
+const CACHE_NAME = 'dance-matrix-v2';
 
-const ASSETS = [
+const CORE_ASSETS = [
   './',
   './index.html',
-  './manifest.json',
-  // Google Fonts — cached on first load
-  'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap'
+  './manifest.json'
 ];
 
-// Install: cache all core assets
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      // Cache what we can; don't fail if fonts are unavailable
-      return Promise.allSettled(ASSETS.map(url => cache.add(url)));
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS))
   );
   self.skipWaiting();
 });
 
-// Activate: clean up old caches
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(
-        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
-      )
+      Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))
     )
   );
   self.clients.claim();
 });
 
-// Fetch: serve from cache, fall back to network, fall back to cached index
 self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+
+  // For page navigations, prefer fresh HTML to avoid stale/blank app states.
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put('./index.html', copy));
+          return response;
+        })
+        .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  // Cache-first for static assets.
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;
-      return fetch(event.request)
-        .then(response => {
-          // Cache successful responses
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-          }
-          return response;
-        })
-        .catch(() => {
-          // Offline fallback: return the main page
-          return caches.match('./index.html');
-        });
+      return fetch(event.request).then(response => {
+        if (response && response.ok && new URL(event.request.url).origin === self.location.origin) {
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, response.clone()));
+        }
+        return response;
+      });
     })
   );
 });
