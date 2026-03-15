@@ -31,8 +31,16 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(event.request)
         .then(response => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put('./index.html', copy));
+          const requestUrl = new URL(event.request.url);
+          const isSameOrigin = requestUrl.origin === self.location.origin;
+          const contentType = response.headers.get('content-type') || '';
+          const isHtml = contentType.includes('text/html');
+
+          if (response.ok && isSameOrigin && isHtml) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put('./index.html', copy));
+          }
+
           return response;
         })
         .catch(() => caches.match('./index.html'))
