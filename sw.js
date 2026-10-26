@@ -1,63 +1,30 @@
-// Dance Matrix Service Worker — resilient offline support without breaking page loads
-const CACHE_NAME = 'dance-matrix-v2';
-
-const CORE_ASSETS = [
-  './',
-  './index.html',
-  './manifest.json'
-];
-
+// Separate page cache keys prevent the planner from replacing the hub offline.
+const CACHE_NAME = 'rince-hub-v1';
+const ROOT = new URL('./', self.location.href);
+const CORE_ASSETS = ['index.html', 'training.html', 'hub.css', 'training-theme.css',
+  'register-sw.js', 'manifest.json', 'images/dancer-guides.png', 'images/boy-guides.png'];
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS))
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS)));
   self.skipWaiting();
 });
-
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))
-    )
-  );
-  self.clients.claim();
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys
+    .filter(key => key !== CACHE_NAME && (key.startsWith('dance-matrix-') || key.startsWith('rince-hub-')))
+    .map(key => caches.delete(key)))).then(() => self.clients.claim()));
 });
-
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-
-  // For page navigations, prefer fresh HTML to avoid stale/blank app states.
+  const url = new URL(event.request.url);
+  if (event.request.method !== 'GET' || url.origin !== ROOT.origin || !url.pathname.startsWith(ROOT.pathname)) return;
   if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          const requestUrl = new URL(event.request.url);
-          const isSameOrigin = requestUrl.origin === self.location.origin;
-          const contentType = response.headers.get('content-type') || '';
-          const isHtml = contentType.includes('text/html');
-
-          if (response.ok && isSameOrigin && isHtml) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put('./index.html', copy));
-          }
-
-          return response;
-        })
-        .catch(() => caches.match('./index.html'))
-    );
-    return;
+    const cacheKey = url.pathname === ROOT.pathname ? new URL('index.html', ROOT).href : url.href;
+    event.respondWith(fetch(event.request).then(response => {
+      if (response.ok) {
+        const copy = response.clone();
+        event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(cacheKey, copy)));
+      }
+      return response;
+    }).catch(async () => (await caches.match(cacheKey)) || new Response('This page is not available offline.', {status:503, headers:{'Content-Type':'text/plain'}})));
+  } else {
+    event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request)));
   }
-
-  // Cache-first for static assets.
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        if (response && response.ok && new URL(event.request.url).origin === self.location.origin) {
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, response.clone()));
-        }
-        return response;
-      });
-    })
-  );
 });
