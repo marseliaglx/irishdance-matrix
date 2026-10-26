@@ -1,7 +1,7 @@
 // Separate page cache keys prevent the planner from replacing the hub offline.
-const CACHE_NAME = 'rince-hub-v1';
+const CACHE_NAME = 'rince-hub-v2';
 const ROOT = new URL('./', self.location.href);
-const CORE_ASSETS = ['index.html', 'training.html', 'hub.css', 'training-theme.css',
+const CORE_ASSETS = ['index.html', 'training.html', 'hub.css?v=2', 'training-theme.css',
   'register-sw.js', 'manifest.json', 'images/dancer-guides.png', 'images/boy-guides.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS)));
